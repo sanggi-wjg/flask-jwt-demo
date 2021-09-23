@@ -1,13 +1,18 @@
 import os
 
-from flask import Flask, render_template, request, redirect, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory
 
 from jwt.decorators import jwt_required
+from jwt.jwt_builder import create_jwt
 
 app = Flask("Flask-JWT-Demo")
 app.config["ENV"] = "local"
 app.config["DEBUG"] = True
 app.config["JWT_SECRET_KEY"] = "secret-key"
+
+app.config['JWT_HEADER_ALG'] = 'HS256'
+app.config['JWT_HEADER_TYP'] = 'JWT'
+app.config['JWT_PAYLOAD_EXP_DELTA'] = 8
 
 
 @app.route("/favicon.ico")
@@ -34,10 +39,11 @@ def login():
     if not password:
         return jsonify({ "msg": "Empty password" }), 400
 
-    if userid != "test" or password != "test":
-        return jsonify({ "msg": "Invalid userId or password" }), 400
+    if userid != "test" or password != "123":
+        return jsonify({ "msg": "Invalid userId or password" }), 401
 
-    return jsonify({ "msg": "Success" }), 200
+    token = create_jwt(userid)
+    return jsonify({ "token": token }), 200
 
 
 @app.route("/protected", methods = ['POST'])

@@ -25,9 +25,13 @@
                 statusCode: {
                     200: function (response) {
                         console.log(response);
-                        loginResult.innerHTML = response.responseJSON.msg;
+                        loginResult.innerHTML = response.token;
                     },
                     400: function (response) {
+                        console.log(response);
+                        loginResult.innerHTML = response.responseJSON.msg;
+                    },
+                    401: function (response) {
                         console.log(response);
                         loginResult.innerHTML = response.responseJSON.msg;
                     },
@@ -49,6 +53,9 @@
                 dataType: "json",
                 accept: "application/json",
                 contentType: "application/json; charset=utf-8",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer SampleToken");
+                },
                 data: JSON.stringify({}),
                 statusCode: {
                     200: function (response) {

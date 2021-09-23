@@ -4,3 +4,7 @@ class HeaderError(Exception):
 
 class NoAuthorizationError(HeaderError):
     pass
+
+
+class InvalidAuthorizationFormat(HeaderError):
+    pass
