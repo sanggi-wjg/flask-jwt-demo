@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery_3.4.1.js') }}"></script>
+    <script>
+        function try_login()
+        {
+            let userId = document.querySelector("input#userId"),
+                password = document.querySelector("input#password");
+
+            let loginResult = document.querySelector("span#loginResult");
+
+            $.ajax({
+                type: 'POST',
+                url: "/login",
+                dataType: "json",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    userId: userId.value,
+                    password: password.value,
+                }),
+                statusCode: {
+                    200: function (response) {
+                        console.log(response);
+                        loginResult.innerHTML = response.responseJSON.msg;
+                    },
+                    400: function (response) {
+                        console.log(response);
+                        loginResult.innerHTML = response.responseJSON.msg;
+                    },
+                    500: function (response) {
+                        console.log(response);
+                        alert('Internal Server Error');
+                    },
+                },
+            });
+        }
+
+        function try_protected()
+        {
+            let protectedResult = document.querySelector("span#protectedResult");
+
+            $.ajax({
+                type: 'POST',
+                url: "/protected",
+                dataType: "json",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({}),
+                statusCode: {
+                    200: function (response) {
+                        console.log(response);
+                        protectedResult.innerHTML = response.msg;
+                    },
+                    400: function (response) {
+                        console.log(response);
+                        protectedResult.innerHTML = response.responseJSON.msg;
+                    },
+                    500: function (response) {
+                        console.log(response);
+                        alert('Internal Server Error');
+                    },
+                },
+            });
+        }
+
+        $(document).ready(function () {
+            $("button#loginButton").click(try_login);
+
+            $("button#protectedButton").click(try_protected)
+        });
+    </script>
+
+</head>
+<body>
+
+<hr>
+<div>
+    <label for="userId"></label><input type="text" id="userId" name="userId" placeholder="userId" required><br>
+    <label for="password"></label><input type="password" id="password" name="password" placeholder="password" required><br>
+    <span id="loginResult"></span><br>
+    <button id="loginButton">Login</button>
+</div>
+<hr>
+<div>
+    <button id="protectedButton">Protected</button>
+    <span id="protectedResult"></span>
+</div>
+
+</body>
+</html>
