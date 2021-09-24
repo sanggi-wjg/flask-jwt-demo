@@ -3,7 +3,7 @@ from wsgiref.headers import Headers
 
 from flask import request, jsonify
 
-from jwt.exceptions import NoAuthorizationError, HeaderError, InvalidAuthorizationFormat
+from demo.exceptions import NoAuthorizationError, HeaderError, InvalidAuthorizationFormat
 
 
 def jwt_required(func: Callable):

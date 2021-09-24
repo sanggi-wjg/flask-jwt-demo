@@ -2,8 +2,8 @@ import os
 
 from flask import Flask, render_template, request, jsonify, send_from_directory
 
-from jwt.decorators import jwt_required
-from jwt.jwt_builder import create_jwt
+from demo.decorators import jwt_required
+from demo.jwt_builder import encode_jwt
 
 app = Flask("Flask-JWT-Demo")
 app.config["ENV"] = "local"
@@ -42,7 +42,7 @@ def login():
     if userid != "test" or password != "123":
         return jsonify({ "msg": "Invalid userId or password" }), 401
 
-    token = create_jwt(userid)
+    token = encode_jwt(userid)
     return jsonify({ "token": token }), 200
 
 

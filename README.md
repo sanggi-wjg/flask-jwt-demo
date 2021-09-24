@@ -1,10 +1,13 @@
 # flask-jwt-demo
 https://jwt.io/
+
 ## 환경
 ```
 python 3.8 
 
 pip install Flask
+pip install pyjwt
+https://pyjwt.readthedocs.io/en/latest/
 ```
 
 ## 테스트
