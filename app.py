@@ -42,8 +42,8 @@ def login():
     if userid != "test" or password != "123":
         return jsonify({ "msg": "Invalid userId or password" }), 401
 
-    token = encode_jwt(userid)
-    return jsonify({ "token": token }), 200
+    jwt = encode_jwt(userid)
+    return jsonify({ "token": jwt }), 200
 
 
 @app.route("/protected", methods = ['POST'])
