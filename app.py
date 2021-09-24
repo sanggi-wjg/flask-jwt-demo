@@ -1,9 +1,9 @@
 import os
-
 from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import _app_ctx_stack as ctx_stack
 
 from demo.decorators import jwt_required
-from demo.jwt_builder import encode_jwt
+from demo.jwt_builder import encode_jwt, get_jwt_identity
 
 app = Flask("Flask-JWT-Demo")
 app.config["ENV"] = "local"
@@ -49,7 +49,7 @@ def login():
 @app.route("/protected", methods = ['POST'])
 @jwt_required
 def protected():
-    return jsonify({ "msg": "Success" }), 200
+    return jsonify({ "msg": get_jwt_identity() }), 200
 
 
 if __name__ == "__main__":

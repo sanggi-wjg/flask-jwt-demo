@@ -46,6 +46,7 @@
         function try_protected()
         {
             let protectedResult = document.querySelector("span#protectedResult");
+            let loginResult = document.querySelector("span#loginResult");
 
             $.ajax({
                 type: 'POST',
@@ -54,7 +55,7 @@
                 accept: "application/json",
                 contentType: "application/json; charset=utf-8",
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", "Bearer SampleToken");
+                    xhr.setRequestHeader("Authorization", "Bearer " + loginResult.innerHTML);
                 },
                 data: JSON.stringify({}),
                 statusCode: {
@@ -75,9 +76,13 @@
         }
 
         $(document).ready(function () {
-            $("button#loginButton").click(try_login);
+            $("button#loginButton").click(function () {
+                try_login();
+            });
 
-            $("button#protectedButton").click(try_protected)
+            $("button#protectedButton").click(function () {
+                try_protected();
+            })
         });
     </script>
 

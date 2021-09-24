@@ -1,7 +1,9 @@
 import datetime
+from typing import Tuple
 
 import jwt
 
+from flask import _app_ctx_stack as ctx_stack
 from flask import current_app, request
 
 
@@ -24,19 +26,12 @@ class JWTBuilder:
         encoded_jwt = jwt.encode({
             'sub' : 'Demo-JWT',
             'name': self.name,
+            'jti' : self.name,
             'iat' : time_claims[0],
             'exp' : time_claims[1],
             'iss' : request.host_url,
         }, self.app.config['JWT_SECRET_KEY'], algorithm = 'HS256')
         return encoded_jwt
-
-    def decode(self, encoded_jwt: str) -> dict:
-        try:
-            decoded_jwt = jwt.decode(encoded_jwt, self.app.config['JWT_SECRET_KEY'], algorithms = ['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise jwt.ExpiredSignatureError('expired jwt')
-
-        return decoded_jwt
 
 
 def encode_jwt(userid: str) -> str:
@@ -44,10 +39,27 @@ def encode_jwt(userid: str) -> str:
     return jwt_builder.encode()
 
 
-def get_time_claims(delta: int):
-    def datetime_to_string(target_datetime: datetime, date_format: str = "%Y-%m-%d %H:%M:%S"):
+def decode_jwt(encoded_jwt: str) -> str:
+    try:
+        decoded_jwt = jwt.decode(
+            encoded_jwt, current_app.config['JWT_SECRET_KEY'],
+            algorithms = ['HS256']
+        )
+    except jwt.ExpiredSignatureError:
+        raise jwt.ExpiredSignatureError('expired jwt')
+
+    return decoded_jwt
+
+
+def get_time_claims(delta: int) -> Tuple[float, float]:
+    def datetime_to_string(target_datetime: datetime, date_format: str = "%Y-%m-%d %H:%M:%S") -> str:
         return target_datetime.strftime(date_format)
 
     now = datetime.datetime.now()
     exp = now + datetime.timedelta(hours = delta)
-    return datetime_to_string(now), datetime_to_string(exp)
+    return now.timestamp(), exp.timestamp()
+
+
+def get_jwt_identity():
+    jwt = getattr(ctx_stack.top, 'jwt')
+    return jwt.get('jti')
