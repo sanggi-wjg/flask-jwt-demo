@@ -61,5 +61,7 @@ def get_time_claims(delta: int) -> Tuple[float, float]:
 
 
 def get_jwt_identity():
+    if not hasattr(ctx_stack.top, 'jwt'):
+        raise Exception('Missing JWT')
     jwt = getattr(ctx_stack.top, 'jwt')
     return jwt.get('jti')
